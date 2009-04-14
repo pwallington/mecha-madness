@@ -17,4 +17,9 @@ public class Position {
         this.X = X;
         this.Y = Y;
     }
+
+    Position neighbour(Direction direction) {
+        //FIXME implement 'neighbour'
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
 }
