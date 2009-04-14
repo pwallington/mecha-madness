@@ -118,7 +118,7 @@ public class Card {
 
         if (priority <= 60) {
             /* U-Turn Cards: 10 - 60 */
-            this.move.turn = 2;
+            this.move.turn = Direction.DOWN;
             this.move.forward = 0;
         } else if (priority <= 420) {
             /* Turn cards: 70-420, alternate Left/Right */
@@ -126,14 +126,14 @@ public class Card {
             switch (priority % 20) {
                 /* Odd cards are left, evens are right */
                 case 0:
-                    this.move.turn = 1;
+                    this.move.turn = Direction.RIGHT;
                     break;
                 case 10:
-                    this.move.turn = -1;
+                    this.move.turn = Direction.LEFT;
                     break;
             }
         } else {
-            this.move.turn = 0;
+            this.move.turn = Direction.UP;
             /* Forward Movement Cards: 430 - 840 */
             if (priority <= 480) {
                 this.move.forward = -1;

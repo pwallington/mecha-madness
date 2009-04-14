@@ -20,6 +20,7 @@ public class Player {
     private Card[] hand;
     private boolean[] registerLocked;
     private Position position;
+    private Direction orientation;
     private Position checkpoint;
     // FIXME erm. REALLY? only needed to fill empty registers as they get locked
     private Deck gameDeck;
@@ -197,5 +198,114 @@ public class Player {
             this.hand[i].setWithPlayer(-1);
             this.hand[i] = null;
         }
+    }
+
+    /**
+     * Move the Player in the direction specified. Recursively moves Players in
+     * the destination square.
+     * @param direction Direction of the move
+     * @return TRUE or FALSE depending on whether the move was successful (used by recursion)
+     */
+    public boolean move(Direction direction) {
+        Board board = Board.getInstance();
+        Player playerRef;
+
+        /* Is it valid to move in this direction? (walls etc) */
+        if (board.isMoveValid(this.position, direction) == java.lang.Boolean.FALSE) {
+            return (java.lang.Boolean.FALSE);
+        } else {
+            /* Is there a robot on that square? */
+            playerRef = board.getPositionOccupier(this.position.neighbour(direction));
+            /* Move that robot, same direction */
+            if (playerRef != null) {
+                if (playerRef.move(direction) == java.lang.Boolean.FALSE) {
+                    return (java.lang.Boolean.FALSE);
+                }
+            }
+        }
+        this.updatePosition(direction);
+        return (java.lang.Boolean.TRUE);
+    }
+
+    public void updatePosition(Direction direction) {
+        switch(direction)
+        {
+            case UP:
+                this.position.Y++;
+                break;
+            case DOWN:
+                this.position.Y--;
+                break;
+            case LEFT:
+                this.position.X--;
+                break;
+            case RIGHT:
+                this.position.X++;
+                break;
+        }
+    }
+
+    @SuppressWarnings("empty-statement")
+    public boolean doCardMove(Move move)
+    {
+        if ((move.forward == 0) && (move.turn == null)) {
+            throw new UnsupportedOperationException("Invalid Move parameters!");
+        }
+
+        if (move.forward == 0) {
+            /* Rotate */
+            //FIXME break rotation code out into a new function
+            switch (move.turn) {
+                case LEFT:
+                    switch(this.orientation) {
+                        case UP:
+                            this.orientation = Direction.LEFT;
+                            break;
+                        case LEFT:
+                            this.orientation = Direction.DOWN;
+                            break;
+                        case DOWN:
+                            this.orientation = Direction.RIGHT;
+                            break;
+                        case RIGHT:
+                            this.orientation = Direction.UP;
+                            break;
+                    }
+                    break;
+                case RIGHT:
+                    switch(this.orientation) {
+                        case UP:
+                            this.orientation = Direction.RIGHT;
+                            break;
+                        case LEFT:
+                            this.orientation = Direction.UP;
+                            break;
+                        case DOWN:
+                            this.orientation = Direction.LEFT;
+                            break;
+                        case RIGHT:
+                            this.orientation = Direction.DOWN;
+                            break;
+                    }
+                    break;
+            }
+            return (java.lang.Boolean.TRUE);
+        } else if (move.forward == -1) {
+            /* Move backwards */
+            switch (this.orientation) {
+                case UP:    return (this.move(Direction.DOWN));
+                case DOWN:  return (this.move(Direction.UP));
+                case LEFT:  return (this.move(Direction.RIGHT));
+                case RIGHT: return (this.move(Direction.LEFT));
+            }
+        } else {
+            /* Do N moves */
+            for (int i = 0; i < move.forward; i++) {
+                if (this.move(this.orientation) == java.lang.Boolean.FALSE) {
+                    return (java.lang.Boolean.FALSE);
+                }
+            }
+        }
+        return (java.lang.Boolean.TRUE);
     }
 }
