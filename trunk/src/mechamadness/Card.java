@@ -22,7 +22,7 @@ public class Card {
      * @param priority The priority value of the card to be created.
      *              Valid values are multiples of 10, 10 through 840.
      *              Card info is automatically setup based on the priority.
-     * @throws java.lang.IllegalArgumentException
+     * @throws IllegalArgumentException
      */
     public Card(int priority) {
         this.index = -1;
@@ -39,7 +39,7 @@ public class Card {
      *              Valid values are multiples of 10, 10 through 840.
      *              Card info is automatically setup based on the priority.
      * @param index The index of the card in the 'ordered' stack.
-     * @throws java.lang.IllegalArgumentException
+     * @throws IllegalArgumentException
      */
     public Card(int priority, int index) {
         this.index = index;
@@ -55,7 +55,7 @@ public class Card {
 
     public void setWithPlayer(int withPlayer) {
         if (this.lockedInRegister != -1) {
-            throw new java.lang.UnsupportedOperationException("Cannot change assignment of a locked card!");
+            throw new UnsupportedOperationException("Cannot change assignment of a locked card!");
         }
         this.withPlayer = withPlayer;
     }
@@ -74,10 +74,10 @@ public class Card {
 
     public void setLockedInRegister(int lockedInRegister) {
         if ((this.lockedInRegister != -1) && (lockedInRegister != -1)) {
-            throw new java.lang.UnsupportedOperationException("Card already locked in register!");
+            throw new UnsupportedOperationException("Card already locked in register!");
         }
         if ((this.lockedInRegister == -1) && (lockedInRegister == -1)) {
-            throw new java.lang.UnsupportedOperationException("Card already unlocked!");
+            throw new UnsupportedOperationException("Card already unlocked!");
         }
         this.lockedInRegister = lockedInRegister;
     }
@@ -88,9 +88,9 @@ public class Card {
      */
     public void retrieveFromPlayer() {
         if (this.withPlayer == -1) {
-            throw new java.lang.UnsupportedOperationException("Card not with a player");
+            throw new UnsupportedOperationException("Card not with a player");
         }
-        throw new java.lang.UnsupportedOperationException("Not Yet Implemented");
+        throw new UnsupportedOperationException("Not Yet Implemented");
     }
 
     /**
@@ -108,12 +108,12 @@ public class Card {
      * @param priority The priority value of the card being created.
      *              Valid values are multiples of 10, 10 through 840.
      *              Card info is automatically setup based on the priority.
-     * @throws java.lang.IllegalArgumentException
+     * @throws IllegalArgumentException
      */
-    private void setMove(int priority) throws java.lang.IllegalArgumentException {
+    private void setMove(int priority) throws IllegalArgumentException {
         /* Throw an exception if it's not a valid priority */
         if (priority < 10 || priority > 840 || (priority % 10) != 0) {
-            throw new java.lang.IllegalArgumentException("Invalid Card Priority");
+            throw new IllegalArgumentException("Invalid Card Priority");
         }
 
         if (priority <= 60) {
