@@ -15,21 +15,29 @@ public class Move {
     public int forward;
     public Direction turn;
 
+    /**
+     * Constructor to create a forward move.
+     * @param forward - spaces forward to move. -1 == 'Back-up'
+     */
     public Move(int forward) {
         this.forward = forward;
         this.turn = Direction.UP;
     }
 
+    /**
+     * Constructor to create a rotation
+     * @param turn - direction to rotate. DOWN == 'U-Turn'
+     */
     public Move(Direction turn) {
         this.forward = 0;
-
-        if (turn == Direction.DOWN) {
-            this.turn = Direction.UP;
-        } else {
-            this.turn = turn;
-        }
+        this.turn = turn;
     }
 
+    /**
+     * Move & Rotate. E.g. conveyor belt 'corners'
+     * @param forward
+     * @param turn
+     */
     public Move(int forward, Direction turn) {
         this.forward = forward;
         this.turn = turn;

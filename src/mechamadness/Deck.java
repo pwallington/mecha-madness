@@ -16,7 +16,7 @@ public class Deck {
     private int currentStackPos;
     /**
      * Raw list of cards, ordered by index.
-     * Not sure if this list should maybe be public for ease-of-use
+     * TODO Not sure if this list should maybe be public for ease-of-use
      */
     private Card[] cards;
     /**
@@ -28,7 +28,7 @@ public class Deck {
 
     public Deck() {
         this.cards = new Card[Deck.deckLength];
-        this.stack = new  int[Deck.deckLength];
+        this.stack = new int[Deck.deckLength];
 
         for (int i = 0; i < Deck.deckLength; i++) {
             this.cards[i] = new Card((i + 1) * 10, i);
@@ -38,20 +38,18 @@ public class Deck {
     }
 
     /**
-     * Shuffle the deck. <p> Retrieves all non-locked cards from the players
-     * that have them.
-     * @todo Tell Player class that card is gone.
+     * Shuffle the deck.
+     * <p> Retrieves all non-locked cards from the players that have them.
+     * @calls Card.retrieveFromPlayer() - expects this to do all the work of retreiving a card
+     * @throws UnsupportedOperationException
      */
     public void shuffle() {
         // We will use the stack position to help us keep track of the number
         // of unlocked cards we have retrieved so far.
-        this.currentStackPos = 0;
-
-        for (int i = 0; i < Deck.deckLength; i++) {
+        int i, j;
+        for (i = 0, this.currentStackPos = 0; i < Deck.deckLength; i++) {
             // Make sure none of the cards are 'out'
-            // FIXME tell Player objects that the cards are gone.
             if (this.cards[i].getLockedInRegister() == -1) {
-                this.cards[i].setWithPlayer(-1);
                 this.cards[i].retrieveFromPlayer();
 
                 this.stack[this.currentStackPos] = i;
@@ -59,13 +57,13 @@ public class Deck {
             }
         }
 
-        /* Only loop through as far as the number of nulocked cards we found
+        /* Only loop through as far as the number of unlocked cards we found
          * This also gives us a way of knowing that we won't shuffle empty
          * entries into the middle of the stack.
          * ONLY USE this.currentStackPos in this loop - not Deck.deckLength */
-        for (int i = 0; i < this.currentStackPos; i++) {
+        for (i = 0; i < this.currentStackPos; i++) {
             // Swap this card with a random one elsewhere in the stack
-            int j = (int) Math.floor(Math.random() * this.currentStackPos);
+            j = (int) Math.floor(Math.random() * this.currentStackPos);
 
             /* Because the stack is a list of indicies we don't need to
              * actually move any card objects around. Makes life simpler
@@ -76,20 +74,16 @@ public class Deck {
                 this.stack[j] = this.stack[i];
                 this.stack[i] = tmp;
             } else {
-                throw new java.lang.UnsupportedOperationException("Found uninitialised Card index in 'unlocked' stack - suspect register locking has gone wrong!");
+                throw new UnsupportedOperationException("Found uninitialised Card index in 'unlocked' stack - suspect register locking has gone wrong!");
             }
         }
 
-
         // Reset the current position to the start of the card stack.
         this.currentStackPos = 0;
-
-        throw new UnsupportedOperationException("Get cards back from players properly.");
     }
 
     /**
-     * Deals a card out.
-     * @todo Work out what to do when there's no cards left.
+     * Deals a card out, removes it from the stack.
      * @return The card that is taken off the top of the stack. Caller responsible for
      *         Correctly assigning it to a player and setting the withPlayer field.
      *         If there are no cards left in the stack then <code>null</code>
@@ -106,8 +100,8 @@ public class Deck {
 
         /*
          * Don't try and return a card if there isn't one in that slot in the
-         * stack or if the card is locked.
-         * FIXME this is at risk of leaving 'gaps' in the stack!
+         * stack or if the card is locked (locked cards shouldn't be in the stack!)
+         * So long as no-one else uses currentStackPos this should be fine.
          */
         if ((i == -1) || (this.getCard(i).getLockedInRegister() != -1)) {
             return null;
@@ -118,8 +112,8 @@ public class Deck {
 
     /** 
      * Method to retrieve a specific card for displaying details etc.
-     * The intention is that it be used like 
-     * <code>deck.getCard(index).getMove()</code>
+     * The intention is that it be used like this:
+     * <p><code>deck.getCard(index).getMove()</code>
      * @param index Index of the requested card.
      * @return The Card with the index specified.
      */

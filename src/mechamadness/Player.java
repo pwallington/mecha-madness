@@ -8,7 +8,7 @@ package mechamadness;
  * Player class. All the attributes of the player as far as the server is
  * concerned. Recieves events grom the Game. Portability to the Client side will
  * probably be useful, but we'll see.
- *
+ * @todo constructor, get singleton refs. dying/respawning. setPosition()
  * @author pwallington
  */
 public class Player {
@@ -52,13 +52,13 @@ public class Player {
 
     public void addDamage(int damage) {
         if (damage <= 0 || damage > 10) {
-            throw new java.lang.UnsupportedOperationException("Invalid addDamage value " + damage);
+            throw new UnsupportedOperationException("Invalid addDamage value: " + damage);
         }
 
         for (int i = this.damage; i < Math.min(this.damage + damage, 9); i++) {
             if (i > 4) {
                 /* Register number (9 - n) gets locked */
-                this.setRegisterLockStatus(9 - i, java.lang.Boolean.TRUE);
+                this.setRegisterLockStatus(9 - i, true);
             }
         }
         this.damage = Math.min(this.damage + damage, 10);
@@ -69,13 +69,13 @@ public class Player {
 
     public void healDamage(int damage) {
         if (damage <= 0 || damage > 10) {
-            throw new java.lang.UnsupportedOperationException("Invalid healDamage value " + damage);
+            throw new UnsupportedOperationException("Invalid healDamage value: " + damage);
         }
 
         for (int i = this.damage; i < Math.max(this.damage - damage, 0); i--) {
             if (i > 4) {
                 /* Register number (9 - n) gets unlocked */
-                this.setRegisterLockStatus(9 - i, java.lang.Boolean.FALSE);
+                this.setRegisterLockStatus(9 - i, false);
             }
         }
         this.damage = Math.max(this.damage - damage, 0);
@@ -111,11 +111,12 @@ public class Player {
 
         this.registerLocked[index] = status;
 
-        if (status == java.lang.Boolean.TRUE) {
+        if (status == true) {
             /* locking a register */
             if (this.registers[index] == null) {
                 /* The register is empty, so get a card to fill it */
                 this.registers[index] = this.gameDeck.dealCard();
+                throw new UnsupportedOperationException("Filling empty registers not implemented yet!");
             }
 
             this.registers[index].setLockedInRegister(index);
@@ -140,11 +141,11 @@ public class Player {
      */
     public void assignCard(int register, int cardIndex) {
         if (this.registers[register] != null) {
-            throw new java.lang.UnsupportedOperationException("Register already filled!");
+            throw new UnsupportedOperationException("Register already filled!");
         }
 
         if (this.registerLocked[register]) {
-            throw new java.lang.UnsupportedOperationException("Register is locked!");
+            throw new UnsupportedOperationException("Register is locked!");
         }
         for (int i = 0; i < this.hand.length; i++) {
             if ((this.hand[i] != null) && (this.hand[i].getIndex() == cardIndex)) {
@@ -154,7 +155,7 @@ public class Player {
             }
         }
         /* Fell out of loop, card didn't match any in the hand */
-        throw new java.lang.UnsupportedOperationException("Card not in hand!");
+        throw new UnsupportedOperationException("Card not in hand!");
     }
 
     /**
@@ -166,11 +167,11 @@ public class Player {
         int i;
 
         if (this.registers[register] != null) {
-            throw new java.lang.UnsupportedOperationException("Register already filled!");
+            throw new UnsupportedOperationException("Register already filled!");
         }
 
         if (this.registerLocked[register]) {
-            throw new java.lang.UnsupportedOperationException("Register is locked!");
+            throw new UnsupportedOperationException("Register is locked!");
         }
 
         do {
@@ -185,10 +186,11 @@ public class Player {
      * Get the Player to give up ownership of their Cards. Sets all cards as
      *  being with player '-1', and forgets all the Card references in the hand
      *  and the registers (unless the register is locked!)
+     * @todo verify if this function is really required.
      */
     public void retrieveCards() {
         for (int i = 0; i < this.registers.length; i++) {
-            if (this.getRegisterLockStatus(i) == java.lang.Boolean.FALSE) {
+            if (this.getRegisterLockStatus(i) == false) {
                 this.registers[i].setWithPlayer(-1);
                 this.registers[i] = null;
             }
@@ -211,25 +213,92 @@ public class Player {
         Player playerRef;
 
         /* Is it valid to move in this direction? (walls etc) */
-        if (board.isMoveValid(this.position, direction) == java.lang.Boolean.FALSE) {
-            return (java.lang.Boolean.FALSE);
+        if (board.isMoveValid(this.position, direction) == false) {
+            return (false);
         } else {
             /* Is there a robot on that square? */
             playerRef = board.getPositionOccupier(this.position.neighbour(direction));
-            /* Move that robot, same direction */
+            /* Move that robot, same direction 
+             * Use recursion to allow a whole chain of moves to fail if the
+             * 'last' one fails.
+             */
             if (playerRef != null) {
-                if (playerRef.move(direction) == java.lang.Boolean.FALSE) {
-                    return (java.lang.Boolean.FALSE);
+                if (playerRef.move(direction) == false) {
+                    return (false);
                 }
             }
         }
         this.updatePosition(direction);
-        return (java.lang.Boolean.TRUE);
+        return (true);
     }
 
-    public void updatePosition(Direction direction) {
-        switch(direction)
-        {
+    private void rotate(Direction turn) {
+        /* Rotate */
+        switch (turn) {
+            case LEFT:
+                switch (this.orientation) {
+                    case UP:
+                        this.orientation = Direction.LEFT;
+                        break;
+                    case LEFT:
+                        this.orientation = Direction.DOWN;
+                        break;
+                    case DOWN:
+                        this.orientation = Direction.RIGHT;
+                        break;
+                    case RIGHT:
+                        this.orientation = Direction.UP;
+                        break;
+                }
+                break;
+            case RIGHT:
+                switch (this.orientation) {
+                    case UP:
+                        this.orientation = Direction.RIGHT;
+                        break;
+                    case RIGHT:
+                        this.orientation = Direction.DOWN;
+                        break;
+                    case DOWN:
+                        this.orientation = Direction.LEFT;
+                        break;
+                    case LEFT:
+                        this.orientation = Direction.UP;
+                        break;
+                }
+                break;
+            case UP:
+                // Do nothing!
+                break;
+            case DOWN:
+                switch (this.orientation) {
+                    case UP:
+                        this.orientation = Direction.DOWN;
+                        break;
+                    case DOWN:
+                        this.orientation = Direction.UP;
+                        break;
+                    case LEFT:
+                        this.orientation = Direction.RIGHT;
+                        break;
+                    case RIGHT:
+                        this.orientation = Direction.LEFT;
+                        break;
+                }
+                break;
+        }
+    }
+
+    /**
+     * Update the Robot's position. This is private as any moves should be done
+     * with the move() method, which allows pushing, etc. Use setPosition() to
+     * set the position of the Robot, e.g. when respawning.
+     * @see Player.move()
+     * @see Player.setPosition()
+     * @param direction
+     */
+    private void updatePosition(Direction direction) {
+        switch (direction) {
             case UP:
                 this.position.Y++;
                 break;
@@ -245,67 +314,47 @@ public class Player {
         }
     }
 
-    @SuppressWarnings("empty-statement")
-    public boolean doCardMove(Move move)
-    {
-        if ((move.forward == 0) && (move.turn == null)) {
+    /**
+     * Apply a card move to our position. Converts an abstract move, (from a card)
+     * into a series of moves in the appropriate direction, depending on our
+     * orientation
+     * @param cardMove The move to do, usually taken straight from a card. Only
+     *                  card-valid moves are permitted (rotate XOR move)
+     * @return TRUE or FALSE depending on whether the move was successfful or not.
+     *          Rotations always succeed, as they cannot be interfered with.
+     *          Forward 2 or 3 moves may fail after the first (or second) part of
+     *          the move - the return value only signifies that the move didn't
+     *          completely succeed.
+     */
+    public boolean doCardMove(Move cardMove) throws UnsupportedOperationException {
+        /* movement NXOR rotation = error condition */
+        if (!((cardMove.forward == 0) ^ (cardMove.turn == null))) {
             throw new UnsupportedOperationException("Invalid Move parameters!");
         }
 
-        if (move.forward == 0) {
-            /* Rotate */
-            //FIXME break rotation code out into a new function
-            switch (move.turn) {
-                case LEFT:
-                    switch(this.orientation) {
-                        case UP:
-                            this.orientation = Direction.LEFT;
-                            break;
-                        case LEFT:
-                            this.orientation = Direction.DOWN;
-                            break;
-                        case DOWN:
-                            this.orientation = Direction.RIGHT;
-                            break;
-                        case RIGHT:
-                            this.orientation = Direction.UP;
-                            break;
-                    }
-                    break;
-                case RIGHT:
-                    switch(this.orientation) {
-                        case UP:
-                            this.orientation = Direction.RIGHT;
-                            break;
-                        case LEFT:
-                            this.orientation = Direction.UP;
-                            break;
-                        case DOWN:
-                            this.orientation = Direction.LEFT;
-                            break;
-                        case RIGHT:
-                            this.orientation = Direction.DOWN;
-                            break;
-                    }
-                    break;
-            }
-            return (java.lang.Boolean.TRUE);
-        } else if (move.forward == -1) {
+        if (cardMove.forward == 0) {
+            this.rotate(cardMove.turn);
+            return (true);
+        } else if (cardMove.forward == -1) {
             /* Move backwards */
             switch (this.orientation) {
-                case UP:    return (this.move(Direction.DOWN));
-                case DOWN:  return (this.move(Direction.UP));
-                case LEFT:  return (this.move(Direction.RIGHT));
-                case RIGHT: return (this.move(Direction.LEFT));
+                case UP:
+                    return (this.move(Direction.DOWN));
+                case DOWN:
+                    return (this.move(Direction.UP));
+                case LEFT:
+                    return (this.move(Direction.RIGHT));
+                case RIGHT:
+                    return (this.move(Direction.LEFT));
             }
         } else {
             /* Do N moves */
-            for (int i = 0; i < move.forward; i++) {
-                if (this.move(this.orientation) == java.lang.Boolean.FALSE) {
-                    return (java.lang.Boolean.FALSE);
+            for (int i = 0; i < cardMove.forward; i++) {
+                if (this.move(this.orientation) == false) {
+                    return (false);
                 }
             }
         }
-        return (java.lang.Boolean.TRUE);
+        return (true);
     }
 }
