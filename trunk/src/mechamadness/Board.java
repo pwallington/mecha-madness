@@ -58,10 +58,14 @@ class Board {
     public boolean addPlayer(Player newPlayer) {
         //FIXME implement 'addPlayer'
         if (numPlayers >= maxPlayers) {
-            throw new UnsupportedOperationException("Player limimt reached") ;
+            throw new UnsupportedOperationException("Player limit already reached") ;
         }
-        playerlist[numPlayers++] = newPlayer;
 
-        throw new UnsupportedOperationException("addPlayer() Not yet implemented");
+        int playerIndex = numPlayers++;
+        playerlist[playerIndex] = newPlayer;
+
+        newPlayer.setPosition(layout.getStartPos(playerIndex));
+
+        throw new UnsupportedOperationException("FIXME addPlayer() Not finished!");
     }
 }
