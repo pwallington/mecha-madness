@@ -22,7 +22,7 @@ public class Player {
     private Position position;
     private Direction orientation;
     private Position checkpoint;
-    // FIXME erm. REALLY? only needed to fill empty registers as they get locked
+    // FIXME erm, do we need a Deck reference? REALLY? only needed to fill empty registers as they get locked
     private Deck gameDeck;
 
     public Position getCheckpoint() {
@@ -42,12 +42,26 @@ public class Player {
     }
 
     public void setDamage(int damage) {
-        this.damage = damage;
-        if (this.damage > 5) {
-            for (int i = this.damage - 5;;) {
-                //FIXME NOT FINISHED - Should this method do lock/unlock actions?
-            }
+        if (damage <= 0 || damage > 10) {
+            throw new UnsupportedOperationException("Invalid setDamage value: " + damage);
         }
+
+        this.damage = damage;
+
+        /* 
+         * Unlock registers
+         */
+        for (int i = 0; (i < (9 - this.damage)) && (i < 5); i++) {
+            this.setRegisterLockStatus(i, false);
+        }
+
+        /*
+         * Lock registers
+         */
+        for (int i = 9 - this.damage; i < 5; i++) {
+            this.setRegisterLockStatus(i, true);
+        }
+
     }
 
     public void addDamage(int damage) {
@@ -55,16 +69,20 @@ public class Player {
             throw new UnsupportedOperationException("Invalid addDamage value: " + damage);
         }
 
-        for (int i = this.damage; i < Math.min(this.damage + damage, 9); i++) {
+        for (int i = this.damage; i <
+                Math.min(this.damage + damage, 9); i++) {
             if (i > 4) {
                 /* Register number (9 - n) gets locked */
                 this.setRegisterLockStatus(9 - i, true);
             }
+
         }
         this.damage = Math.min(this.damage + damage, 10);
         if (this.damage == 10) {
             // FIXME Oh. We died. What now? return(O_NOES_I_R_DEAD) ?
+            throw new UnsupportedOperationException("Dead!");
         }
+
     }
 
     public void healDamage(int damage) {
@@ -72,24 +90,31 @@ public class Player {
             throw new UnsupportedOperationException("Invalid healDamage value: " + damage);
         }
 
-        for (int i = this.damage; i < Math.max(this.damage - damage, 0); i--) {
+        for (int i = this.damage; i <
+                Math.max(this.damage - damage, 0); i--) {
             if (i > 4) {
                 /* Register number (9 - n) gets unlocked */
                 this.setRegisterLockStatus(9 - i, false);
             }
+
         }
         this.damage = Math.max(this.damage - damage, 0);
     }
 
     public void setHand(Card[] hand) {
         this.hand = hand;
-        for (int i = 0; i < this.hand.length; i++) {
+        for (int i = 0; i <
+                this.hand.length; i++) {
             this.hand[i].setWithPlayer(this.playerId);
         }
     }
 
     public int getPlayerId() {
         return playerId;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 
     public Position getPosition() {
@@ -125,6 +150,7 @@ public class Player {
             /* unlocking a register */
             this.registers[index].setLockedInRegister(-1);
         }
+
     }
 
     public Card getRegister(int index) {
@@ -147,7 +173,8 @@ public class Player {
         if (this.registerLocked[register]) {
             throw new UnsupportedOperationException("Register is locked!");
         }
-        for (int i = 0; i < this.hand.length; i++) {
+
+        for (int i = 0; i <this.hand.length; i++) {
             if ((this.hand[i] != null) && (this.hand[i].getIndex() == cardIndex)) {
                 this.registers[register] = this.hand[i];
                 this.hand[i] = null;
@@ -189,17 +216,21 @@ public class Player {
      * @todo verify if this function is really required.
      */
     public void retrieveCards() {
-        for (int i = 0; i < this.registers.length; i++) {
+        for (int i = 0; i <
+                this.registers.length; i++) {
             if (this.getRegisterLockStatus(i) == false) {
                 this.registers[i].setWithPlayer(-1);
                 this.registers[i] = null;
             }
+
         }
 
-        for (int i = 0; i < this.hand.length; i++) {
+        for (int i = 0; i <
+                this.hand.length; i++) {
             this.hand[i].setWithPlayer(-1);
             this.hand[i] = null;
         }
+
     }
 
     /**
@@ -226,6 +257,7 @@ public class Player {
                 if (playerRef.move(direction) == false) {
                     return (false);
                 }
+
             }
         }
         this.updatePosition(direction);
@@ -240,32 +272,44 @@ public class Player {
                     case UP:
                         this.orientation = Direction.LEFT;
                         break;
+
                     case LEFT:
                         this.orientation = Direction.DOWN;
                         break;
+
                     case DOWN:
                         this.orientation = Direction.RIGHT;
                         break;
+
                     case RIGHT:
                         this.orientation = Direction.UP;
                         break;
+
                 }
+
+
                 break;
             case RIGHT:
                 switch (this.orientation) {
                     case UP:
                         this.orientation = Direction.RIGHT;
                         break;
+
                     case RIGHT:
                         this.orientation = Direction.DOWN;
                         break;
+
                     case DOWN:
                         this.orientation = Direction.LEFT;
                         break;
+
                     case LEFT:
                         this.orientation = Direction.UP;
                         break;
+
                 }
+
+
                 break;
             case UP:
                 // Do nothing!
@@ -275,18 +319,25 @@ public class Player {
                     case UP:
                         this.orientation = Direction.DOWN;
                         break;
+
                     case DOWN:
                         this.orientation = Direction.UP;
                         break;
+
                     case LEFT:
                         this.orientation = Direction.RIGHT;
                         break;
+
                     case RIGHT:
                         this.orientation = Direction.LEFT;
                         break;
+
                 }
+
+
                 break;
         }
+
     }
 
     /**
@@ -302,16 +353,22 @@ public class Player {
             case UP:
                 this.position.Y++;
                 break;
+
             case DOWN:
                 this.position.Y--;
                 break;
+
             case LEFT:
                 this.position.X--;
                 break;
+
             case RIGHT:
                 this.position.X++;
                 break;
+
         }
+
+
     }
 
     /**
@@ -347,12 +404,15 @@ public class Player {
                 case RIGHT:
                     return (this.move(Direction.LEFT));
             }
+
         } else {
             /* Do N moves */
-            for (int i = 0; i < cardMove.forward; i++) {
+            for (int i = 0; i <
+                    cardMove.forward; i++) {
                 if (this.move(this.orientation) == false) {
                     return (false);
                 }
+
             }
         }
         return (true);

@@ -45,7 +45,10 @@ public class ConnectionDialog extends javax.swing.JDialog {
 
     connectButton = new javax.swing.JButton();
     cancelButton = new javax.swing.JButton();
-    hostButton = new javax.swing.JButton();
+    jLabel1 = new javax.swing.JLabel();
+    jLabel2 = new javax.swing.JLabel();
+    jTextField1 = new javax.swing.JTextField();
+    jTextField2 = new javax.swing.JTextField();
 
     setName("Form"); // NOI18N
     addWindowListener(new java.awt.event.WindowAdapter() {
@@ -71,36 +74,58 @@ public class ConnectionDialog extends javax.swing.JDialog {
       }
     });
 
-    hostButton.setText(resourceMap.getString("hostButton.text")); // NOI18N
-    hostButton.setName("hostButton"); // NOI18N
-    hostButton.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        hostButtonActionPerformed(evt);
-      }
-    });
+    jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
+    jLabel1.setName("jLabel1"); // NOI18N
+
+    jLabel2.setText(resourceMap.getString("jLabel2.text")); // NOI18N
+    jLabel2.setName("jLabel2"); // NOI18N
+
+    jTextField1.setText(resourceMap.getString("jTextField1.text")); // NOI18N
+    jTextField1.setName("jTextField1"); // NOI18N
+
+    jTextField2.setText(resourceMap.getString("jTextField2.text")); // NOI18N
+    jTextField2.setName("jTextField2"); // NOI18N
 
     org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
       .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-        .addContainerGap(159, Short.MAX_VALUE)
-        .add(hostButton)
-        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+        .addContainerGap(240, Short.MAX_VALUE)
         .add(connectButton)
         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
         .add(cancelButton)
         .addContainerGap())
+      .add(layout.createSequentialGroup()
+        .add(50, 50, 50)
+        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+          .add(jLabel1)
+          .add(jLabel2))
+        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+          .add(jTextField2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+          .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+        .addContainerGap(230, Short.MAX_VALUE))
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
       .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-        .addContainerGap(266, Short.MAX_VALUE)
+        .addContainerGap(182, Short.MAX_VALUE)
         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-          .add(cancelButton)
-          .add(connectButton)
-          .add(hostButton))
-        .addContainerGap())
+          .add(jLabel1)
+          .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+          .add(layout.createSequentialGroup()
+            .add(56, 56, 56)
+            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+              .add(cancelButton)
+              .add(connectButton))
+            .addContainerGap())
+          .add(layout.createSequentialGroup()
+            .add(6, 6, 6)
+            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+              .add(jTextField2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+              .add(jLabel2)))))
     );
 
     pack();
@@ -118,10 +143,6 @@ public class ConnectionDialog extends javax.swing.JDialog {
     private void closeDialog(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_closeDialog
         doClose(RET_CANCEL);
     }//GEN-LAST:event_closeDialog
-
-    private void hostButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hostButtonActionPerformed
-        doClose(RET_HOST);
-    }//GEN-LAST:event_hostButtonActionPerformed
 
     private void doClose(int retStatus) {
         returnStatus = retStatus;
@@ -149,7 +170,10 @@ public class ConnectionDialog extends javax.swing.JDialog {
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JButton cancelButton;
   private javax.swing.JButton connectButton;
-  private javax.swing.JButton hostButton;
+  private javax.swing.JLabel jLabel1;
+  private javax.swing.JLabel jLabel2;
+  private javax.swing.JTextField jTextField1;
+  private javax.swing.JTextField jTextField2;
   // End of variables declaration//GEN-END:variables
 
     private int returnStatus = RET_CANCEL;
