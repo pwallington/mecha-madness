@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package mechamadness;
+package com.uniqocom.mechamadness.gameLogic;
 
 /**
  * SquareType enum. Used for determining the type of a board square.

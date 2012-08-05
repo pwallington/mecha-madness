@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mechamadness;
+package com.uniqocom.mechamadness.gameLogic;
 
 /**
  * Helper class to describe positions on the board.

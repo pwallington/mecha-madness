@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mechamadness;
+package com.uniqocom.mechamadness.gameLogic;
 
 /**
  * Player class. All the attributes of the player as far as the server is
@@ -22,8 +22,6 @@ public class Player {
     private Position position;
     private Direction orientation;
     private Position checkpoint;
-    // FIXME erm, do we need a Deck reference? REALLY? only needed to fill empty registers as they get locked
-    private Deck gameDeck;
 
     public Position getCheckpoint() {
         return checkpoint;
@@ -140,7 +138,7 @@ public class Player {
             /* locking a register */
             if (this.registers[index] == null) {
                 /* The register is empty, so get a card to fill it */
-                this.registers[index] = this.gameDeck.dealCard();
+                this.registers[index] = Deck.getDeck().dealCard();
                 throw new UnsupportedOperationException("Filling empty registers not implemented yet!");
             }
 

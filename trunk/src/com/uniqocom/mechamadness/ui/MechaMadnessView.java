@@ -2,7 +2,7 @@
  * MechaMadnessView.java
  */
 
-package mechamadness;
+package com.uniqocom.mechamadness.ui;
 
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
@@ -126,11 +126,11 @@ public class MechaMadnessView extends FrameView {
 
     menuBar.setName("menuBar"); // NOI18N
 
-    org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(mechamadness.MechaMadnessApp.class).getContext().getResourceMap(MechaMadnessView.class);
+    org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.uniqocom.mechamadness.ui.MechaMadnessApp.class).getContext().getResourceMap(MechaMadnessView.class);
     fileMenu.setText(resourceMap.getString("fileMenu.text")); // NOI18N
     fileMenu.setName("fileMenu"); // NOI18N
 
-    javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(mechamadness.MechaMadnessApp.class).getContext().getActionMap(MechaMadnessView.class, this);
+    javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(com.uniqocom.mechamadness.ui.MechaMadnessApp.class).getContext().getActionMap(MechaMadnessView.class, this);
     exitMenuItem.setAction(actionMap.get("quit")); // NOI18N
     exitMenuItem.setName("exitMenuItem"); // NOI18N
     fileMenu.add(exitMenuItem);

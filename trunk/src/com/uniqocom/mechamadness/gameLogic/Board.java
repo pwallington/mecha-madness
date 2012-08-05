@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mechamadness;
+package com.uniqocom.mechamadness.gameLogic;
 
 /**
  * Board class. I blame the teacher.
@@ -10,16 +10,21 @@ package mechamadness;
  */
 class Board {
 
+    public Board(BoardLayout layout) {
+        boardref = this;
+        this.layout = layout;
+    }
+
     static Board boardref;
     private int maxPlayers = 8;
     private int numPlayers = 0;
-    private Layout layout;
+    private BoardLayout layout;
     private Player[] playerlist = new Player[maxPlayers];
 
     static Board getInstance() {
         if (boardref == null) {
             //FIXME sort out constructor params.
-            boardref = new Board();
+            boardref = new Board(null);
         }
         return (boardref);
     }
@@ -48,7 +53,7 @@ class Board {
         return null;
     }
 
-    void setLayout(Layout layout) {
+    void setLayout(BoardLayout layout) {
         this.layout = layout;
         if (this.layout.getMaxPlayers() != 0) {
             this.maxPlayers = this.layout.getMaxPlayers();
