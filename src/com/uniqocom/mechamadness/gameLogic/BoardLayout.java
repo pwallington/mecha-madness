@@ -2,27 +2,48 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mechamadness;
+package com.uniqocom.mechamadness.gameLogic;
 
 import java.awt.Rectangle;
 
 /**
  * Class to handle the layout of the board.
  * @todo Implement layout constructor, loading, saving, etc.
+ * @todo Layouts could be serialized or stored using GPB or some text format?
+ *
  * @author pwallington
  */
-public class Layout {
+public class BoardLayout {
 
     private Rectangle boardSize;
     private int maxPlayers;
     private LayoutSquare grid[][];
     private Position startPos[];
 
+    public BoardLayout(Rectangle boardSize) {
+        this.boardSize.setRect(boardSize);
+    }
+
+    public SquareType getGridSquareType(int x, int y) {
+        return grid[x][y].type;
+    }
+
+    /**
+     * Setter for square types
+     * @param y coordinate
+     * @param type new type of target square
+     * @throws ArrayIndexOutOfBoundsException
+     */
+    public void setGridSqureType(int x, int y, SquareType type)
+            throws ArrayIndexOutOfBoundsException {
+        this.grid[x][y].type = type;
+    }
+
     /**
      * Debug constructor to initialise stuff.
      * @todo REPLACE ME
      */
-    Layout(int sizeX, int sizeY) {
+    BoardLayout(int sizeX, int sizeY) {
         this.boardSize.setLocation(0, 0);
         this.boardSize.setSize(sizeX, sizeY);
         
@@ -34,11 +55,7 @@ public class Layout {
             {
                 LayoutSquare sq = grid[x][y];
                 sq.dir = Direction.UP;
-                sq.pos = new Position(x, y);
-                sq.walls[0] = false;
-                sq.walls[1] = false;
-                sq.walls[2] = false;
-                sq.walls[3] = false;
+                sq.clearWalls();
                 sq.type = SquareType.BLANK;
             }
         }
@@ -60,7 +77,7 @@ public class Layout {
     }
 
     public void setBoardSize(Rectangle boardSize) {
-        this.boardSize = boardSize;
+        this.boardSize.setRect(boardSize);
     }
 
     private void setBoardSize(int minX, int maxX, int minY, int maxY) {
@@ -100,17 +117,11 @@ public class Layout {
      */
     private class LayoutSquare {
 
-        public LayoutSquare(Position pos, SquareType type, Direction dir) {
-            this.pos = pos;
+        public LayoutSquare(SquareType type, Direction dir) {
             this.type = type;
             this.dir = dir;
         }
 
-        /**
-         * Position on the layout
-         * FIXME - pos may not be neccessary?
-         */
-        public Position pos;
         /**
          * Squaretype - enum.
          */
@@ -119,6 +130,13 @@ public class Layout {
          * Walls around this square. Indexed with Direction.toValue()
          */
         public boolean walls[] = new boolean[4];
+
+        public void clearWalls() {
+            this.walls[0] = false;
+            this.walls[1] = false;
+            this.walls[2] = false;
+            this.walls[3] = false;
+        }
         /**
          * Direction, for pushers, conveyors etc.
          */

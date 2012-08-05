@@ -2,7 +2,7 @@
  * MechaMadnessApp.java
  */
 
-package mechamadness;
+package com.uniqocom.mechamadness.ui;
 
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;

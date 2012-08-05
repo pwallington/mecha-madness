@@ -9,7 +9,7 @@
  * Created on May 9, 2009, 1:00:01 PM
  */
 
-package mechamadness;
+package com.uniqocom.mechamadness.ui;
 
 /**
  *
@@ -57,7 +57,7 @@ public class ConnectionDialog extends javax.swing.JDialog {
       }
     });
 
-    org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(mechamadness.MechaMadnessApp.class).getContext().getResourceMap(ConnectionDialog.class);
+    org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.uniqocom.mechamadness.ui.MechaMadnessApp.class).getContext().getResourceMap(ConnectionDialog.class);
     connectButton.setText(resourceMap.getString("connectButton.text")); // NOI18N
     connectButton.setName("connectButton"); // NOI18N
     connectButton.addActionListener(new java.awt.event.ActionListener() {

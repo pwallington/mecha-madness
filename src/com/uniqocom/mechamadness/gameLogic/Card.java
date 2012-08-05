@@ -2,10 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mechamadness;
+package com.uniqocom.mechamadness.gameLogic;
 
 /**
- * @todo More JavaDoc
  * @author pwallington
  */
 public class Card {
@@ -18,7 +17,7 @@ public class Card {
 
     /**
      * Create a new Card object WITHOUT a deck position!
-     * <p> Should only be used to create 'abstract' cards.
+     * <p> <em>Should only be used to create 'abstract' cards.</em>
      * @param priority The priority value of the card to be created.
      *              Valid values are multiples of 10, 10 through 840.
      *              Card info is automatically setup based on the priority.
@@ -34,7 +33,7 @@ public class Card {
 
     /**
      * Create a new Card object WITH a deck position
-     * <p> Should only be used by the Deck during initialisation.
+     * <p> <em>Should only be used by the Deck during initialisation.</em>
      * @param priority The priority value of the card to be created.
      *              Valid values are multiples of 10, 10 through 840.
      *              Card info is automatically setup based on the priority.
@@ -72,6 +71,10 @@ public class Card {
         return lockedInRegister;
     }
 
+    /**
+     * Sets a card as being locked in a register (e.g. after damage)
+     * @param lockedInRegister The register the card should be locked to or -1 for 'not locked'
+     */
     public void setLockedInRegister(int lockedInRegister) {
         if ((this.lockedInRegister != -1) && (lockedInRegister != -1)) {
             throw new UnsupportedOperationException("Card already locked in register!");

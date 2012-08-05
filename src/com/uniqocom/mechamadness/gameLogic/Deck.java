@@ -2,15 +2,28 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mechamadness;
+package com.uniqocom.mechamadness.gameLogic;
 
 /**
  * Deck class to keep track of all the cards. The deck looks after instantiating,
  * shuffling and dealing cards.
- * @todo More JavaDoc
+ * @todo replace all the logic here with a useful java type (deque?)
  * @author pwallington
  */
 public class Deck {
+
+    private static Deck singleton;
+
+    /**
+     * Singleton access function
+     * @return Deck singleton
+     */
+    public static Deck getDeck() {
+        if (singleton == null) {
+            singleton = new Deck();
+        }
+        return singleton;
+    }
 
     public static final int deckLength = 84;
     private int currentStackPos;
@@ -26,7 +39,7 @@ public class Deck {
      */
     private int[] stack;
 
-    public Deck() {
+    private Deck() {
         this.cards = new Card[Deck.deckLength];
         this.stack = new int[Deck.deckLength];
 
